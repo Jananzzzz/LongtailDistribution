@@ -13,22 +13,23 @@ with open("C:/Users/16591/Desktop/MachineLearningLab/Challenge2_LongtailedDistri
     reader = csv.reader(f)
     list_csv = list(reader)
     for line in list_csv:
-     if line[0] == 'emotion':
-          {}
-     elif line[0] == '0':
-          x0 = x0 + 1
-     elif line[0] == '1':
-          x1 = x1 + 1
-     elif line[0] == '2':
-          x2 = x2 + 1
-     elif line[0] == '3':
-          x3 = x3 + 1
-     elif line[0] == '4':
-          x4 = x4 + 1
-     elif line[0] == '5':
-          x5 = x5 + 1
-     elif line[0] == '6':
-          x6 = x6 + 1
+     if line[-1] == 'Test':
+          if line[0] == 'emotion':
+               {}
+          elif line[0] == '0':
+               x0 = x0 + 1
+          elif line[0] == '1':
+               x1 = x1 + 1
+          elif line[0] == '2':
+               x2 = x2 + 1
+          elif line[0] == '3':
+               x3 = x3 + 1
+          elif line[0] == '4':
+               x4 = x4 + 1
+          elif line[0] == '5':
+               x5 = x5 + 1
+          elif line[0] == '6':
+               x6 = x6 + 1
 
 y = [x0, x1, x2, x3, x4, x5, x6]
 Y = sorted(y)
@@ -44,8 +45,8 @@ plt.rcParams["figure.figsize"] = [15.00, 5.00]
 default_x_ticks = range(len(X))
 plt.xticks(default_x_ticks, X)
 plt.plot(default_x_ticks, Y)
-plt.show()
+#plt.show()
 
 
 #plt.hist(Y)
-#plt.savepic("figure: 1")
+plt.savefig("B_test.png")

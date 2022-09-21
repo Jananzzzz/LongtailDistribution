@@ -25,8 +25,7 @@ class DataSetFactory:
         private_emotions = []
         public_images = []
         public_emotions = []
-                                                                # there is a problem "can't find the file".
-        with open('./dataset/fer2013A.csv', 'r') as csvin:   #with open('C:\Users\16591\Desktop\MachineLearningLab\Challenge2_LongtailedDistributionEmotionRecognition\code\dataset\fer2013A.csv', 'r') as csvin:
+        with open("C:/Users/16591/Desktop/MachineLearningLab/Challenge2_LongtailedDistributionEmotionRecognition/code/dataset/fer2013A.csv", 'r') as csvin: 
             data = csv.reader(csvin)
             next(data)
             for row in data:
