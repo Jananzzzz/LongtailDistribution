@@ -1,3 +1,4 @@
+from email.mime import image
 import os.path as osp
 
 import cv2
@@ -126,10 +127,10 @@ def guided_backprop(images, model_name):
 def main():
     guided_backprop(
         images=[
-            {'path': '../test/angry.jpg'},
-            {'path': '../test/happy.jpg'},
-            {'path': '../test/sad.jpg'},
-            {'path': '../test/surprised.jpg'},
+            {'path': './test/angry.jpg'},
+            {'path': './test/happy.jpg'},
+            {'path': './test/sad.jpg'},
+            {'path': './test/surprised.jpg'},
         ],
         model_name='private_model_233_66.t7'
     )

@@ -13,7 +13,7 @@ with open("C:/Users/16591/Desktop/MachineLearningLab/Challenge2_LongtailedDistri
     reader = csv.reader(f)
     list_csv = list(reader)
     for line in list_csv:
-     if line[-1] == 'Test':
+     if line[-1] == 'Training':
           if line[0] == 'emotion':
                {}
           elif line[0] == '0':
@@ -33,12 +33,16 @@ with open("C:/Users/16591/Desktop/MachineLearningLab/Challenge2_LongtailedDistri
 
 y = [x0, x1, x2, x3, x4, x5, x6]
 Y = sorted(y)
+#print(y)
+#print(Y)
 X = [0, 1, 2, 3, 4, 5, 6]
 
 for i in range(7):
      for j in range(7):
           if Y[i] == y[j]:
                X[i] = j
+
+
 
 plt.rcParams["figure.figsize"] = [15.00, 5.00]
 
@@ -49,4 +53,4 @@ plt.plot(default_x_ticks, Y)
 
 
 #plt.hist(Y)
-plt.savefig("B_test.png")
+plt.savefig("B_training.png")

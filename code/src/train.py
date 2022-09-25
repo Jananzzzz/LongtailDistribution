@@ -87,7 +87,7 @@ def main():
     learning_rate_decay_every = 5
     learning_rate_decay_rate = 0.9
     # ------------------------
-
+    #             0          1        2       3       4         5          6
     classes = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     network = model.Model(num_classes=len(classes)).to(device)
     if not torch.cuda.is_available():
