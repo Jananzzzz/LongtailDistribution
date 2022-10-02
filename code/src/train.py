@@ -25,7 +25,8 @@ class DataSetFactory:
         private_emotions = []
         public_images = []
         public_emotions = []
-        with open("C:/Users/16591/Desktop/MachineLearningLab/Challenge2_LongtailedDistributionEmotionRecognition/code/dataset/fer2013A.csv", 'r') as csvin: 
+
+        with open('../dataset/fer2013.csv', 'r') as csvin:
             data = csv.reader(csvin)
             next(data)
             for row in data:
@@ -87,7 +88,7 @@ def main():
     learning_rate_decay_every = 5
     learning_rate_decay_rate = 0.9
     # ------------------------
-    #             0          1        2       3       4         5          6
+
     classes = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     network = model.Model(num_classes=len(classes)).to(device)
     if not torch.cuda.is_available():
@@ -162,7 +163,7 @@ def main():
                     if epoch >= 10:
                         print('saving new model')
                         state = {'net': network.state_dict()}
-                        torch.save(state, './trained/%s_model_%d_%d.t7' % (name, epoch + 1, accuracy))
+                        torch.save(state, '../trained/%s_model_%d_%d.t7' % (name, epoch + 1, accuracy))
                     min_validation_loss[name] = total_validation_loss
 
                 print('Epoch [%d/%d] %s validation Loss: %.4f, Accuracy: %.4f' % (
