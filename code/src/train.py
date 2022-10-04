@@ -26,7 +26,7 @@ class DataSetFactory:
         public_images = []
         public_emotions = []
 
-        with open('../dataset/fer2013.csv', 'r') as csvin:
+        with open("C:/Users/16591/Desktop/Github/dataset/fer2013A.csv", 'r') as csvin:
             data = csv.reader(csvin)
             next(data)
             for row in data:
@@ -162,8 +162,8 @@ def main():
                 if total_validation_loss <= min_validation_loss[name]:
                     if epoch >= 10:
                         print('saving new model')
-                        state = {'net': network.state_dict()}
-                        torch.save(state, '../trained/%s_model_%d_%d.t7' % (name, epoch + 1, accuracy))
+                        state = {'net': network.state_dict()}        #
+                        torch.save(state, 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/trained/%s_model_%d_%d.t7' % (name, epoch + 1, accuracy))
                     min_validation_loss[name] = total_validation_loss
 
                 print('Epoch [%d/%d] %s validation Loss: %.4f, Accuracy: %.4f' % (
