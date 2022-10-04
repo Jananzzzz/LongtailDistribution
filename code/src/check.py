@@ -1,3 +1,4 @@
+from email.contentmanager import raw_data_manager
 import os.path as osp
 
 import cv2
@@ -11,9 +12,9 @@ from torchvision import transforms
 from torchsummary import summary
 from visualize.grad_cam import BackPropagation, GradCAM,GuidedBackPropagation
 
-faceCascade = cv2.CascadeClassifier('./visualize/haarcascade_frontalface_default.xml')
-shape = (48,48)
-classes = [
+faceCascade = cv2.CascadeClassifier('C:/Users/16591/Desktop/Github/LongtailDistribution/code/src/visualize/haarcascade_frontalface_default.xml')
+shape = (48,48)           #
+classes = [               #../visualize/haarcascade_frontalface_default.xml
     'Angry',
     'Disgust',
     'Fear',
@@ -71,12 +72,13 @@ def get_gradcam_image(gcam, raw_image, paper_cmap=False):
 def guided_backprop(images, model_name):
 
     for i, image in enumerate(images):
+        # target, raw_image = preprocess(images[image])
         target, raw_image = preprocess(image['path'])
         image['image'] = target
         image['raw_image'] = raw_image
 
     net = model.Model(num_classes=len(classes))
-    checkpoint = torch.load(os.path.join('../trained', model_name), map_location=torch.device('cpu'))
+    checkpoint = torch.load(os.path.join('C:/Users/16591/Desktop/Github/LongtailDistribution/code/trained', model_name), map_location=torch.device('cpu'))
     net.load_state_dict(checkpoint['net'])
     net.eval()
     summary(net, (1, shape[0], shape[1]))
@@ -123,17 +125,30 @@ def guided_backprop(images, model_name):
     cv2.imwrite('../test/guided_gradcam.jpg',cv2.resize(cv2.vconcat(result_images), None, fx=2,fy=2))
 
 
+
 def main():
     guided_backprop(
-        images=[
-            {'path': '../test/angry.jpg'},
-            {'path': '../test/happy.jpg'},
-            {'path': '../test/sad.jpg'},
-            {'path': '../test/surprised.jpg'},
+        images=[                             # C:/Users/16591/Desktop/Github/LongtailDistribution/code/  test   /  angry.jpg
+            {'path': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/angry.jpg'},
+            {'path': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/happy.jpg'},
+            {'path': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/sad.jpg'},
+            {'path': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/surprised.jpg'},
         ],
         model_name='private_model_233_66.t7'
     )
 
-
 if __name__ == "__main__":
     main()
+'''
+def main():
+    guided_backprop(
+        images={                             # C:/Users/16591/Desktop/Github/LongtailDistribution/code/  test   /  angry.jpg
+            'path': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/angry.jpg',
+            'path1': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/happy.jpg',
+            'path2': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/sad.jpg',
+            'path3': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/surprised.jpg',
+        },
+        model_name='private_model_233_66.t7'
+    )
+
+'''
