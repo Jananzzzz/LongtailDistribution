@@ -67,6 +67,7 @@ class Model(nn.Module):
         self.avgp = nn.AdaptiveAvgPool2d((1, 1))
 
     def forward(self, input):
+        # input = input.cuda()
         x = input
         x = self.conv1(x)
         x = self.bn1(x)

@@ -122,7 +122,7 @@ def guided_backprop(images, model_name):
         result_images.append(img)
         print(image['path'],classes[actual_emotion.data], probs.data[:,0] * 100)
 
-    cv2.imwrite('../test/guided_gradcam.jpg',cv2.resize(cv2.vconcat(result_images), None, fx=2,fy=2))
+    cv2.imwrite('C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/guided_gradcam.jpg',cv2.resize(cv2.vconcat(result_images), None, fx=2,fy=2))
 
 
 
@@ -139,16 +139,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-'''
-def main():
-    guided_backprop(
-        images={                             # C:/Users/16591/Desktop/Github/LongtailDistribution/code/  test   /  angry.jpg
-            'path': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/angry.jpg',
-            'path1': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/happy.jpg',
-            'path2': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/sad.jpg',
-            'path3': 'C:/Users/16591/Desktop/Github/LongtailDistribution/code/test/surprised.jpg',
-        },
-        model_name='private_model_233_66.t7'
-    )
-
-'''
