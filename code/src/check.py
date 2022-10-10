@@ -12,6 +12,8 @@ from torchvision import transforms
 from torchsummary import summary
 from visualize.grad_cam import BackPropagation, GradCAM,GuidedBackPropagation
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 faceCascade = cv2.CascadeClassifier('C:/Users/16591/Desktop/Github/LongtailDistribution/code/src/visualize/haarcascade_frontalface_default.xml')
 shape = (48,48)           #
 classes = [               #../visualize/haarcascade_frontalface_default.xml
@@ -78,8 +80,9 @@ def guided_backprop(images, model_name):
         image['raw_image'] = raw_image
 
     net = model.Model(num_classes=len(classes))
-    checkpoint = torch.load(os.path.join('C:/Users/16591/Desktop/Github/LongtailDistribution/code/trained', model_name), map_location=torch.device('cpu'))
+    checkpoint = torch.load(os.path.join('C:/Users/16591/Desktop/Github/LongtailDistribution/code/trained', model_name), map_location=torch.device('cuda:0'))
     net.load_state_dict(checkpoint['net'])
+    net.to(device)
     net.eval()
     summary(net, (1, shape[0], shape[1]))
 

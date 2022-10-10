@@ -6,6 +6,8 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 class _BaseWrapper(object):
     """
     Please modify forward() and backward() according to your task.
