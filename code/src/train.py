@@ -13,6 +13,9 @@ if not torch.cuda.is_available():
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+if torch.cuda.is_available():
+    print("Use GPU for training: ")
+
 shape = (44, 44)
 
 
@@ -26,7 +29,7 @@ class DataSetFactory:
         public_images = []
         public_emotions = []
 
-        with open("C:/Users/16591/Desktop/Github/dataset/fer2013A.csv", 'r') as csvin:
+        with open("C:/Users/16591/Desktop/Github/dataset/fer2013B.csv", 'r') as csvin:
             data = csv.reader(csvin)
             next(data)
             for row in data:
@@ -37,14 +40,14 @@ class DataSetFactory:
                 if row[-1] == 'Training':
                     emotions.append(int(row[0]))
                     images.append(Image.fromarray(face))
-                elif row[-1] == "PrivateTest":
+                elif row[-1] == "Test":
                     private_emotions.append(int(row[0]))
                     private_images.append(Image.fromarray(face))
-                elif row[-1] == "PublicTest":
+                elif row[-1] == "Valid":
                     public_emotions.append(int(row[0]))
                     public_images.append(Image.fromarray(face))
 
-        print('training size %d : private val size %d : public val size %d' % (
+        print('training size %d : Test val size %d : Valid val size %d' % (
             len(images), len(private_images), len(public_images)))
         train_transform = transforms.Compose([
             transforms.RandomCrop(shape[0]),
@@ -88,7 +91,7 @@ def main():
     learning_rate_decay_every = 5
     learning_rate_decay_rate = 0.9
     # ------------------------
-
+            #    0          1         2       3       4         5          6
     classes = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     network = model.Model(num_classes=len(classes)).to(device)
     if not torch.cuda.is_available():
@@ -100,13 +103,13 @@ def main():
 
     training_loader = DataLoader(factory.training, batch_size=batch_size, shuffle=True, num_workers=0)
     validation_loader = {
-        'private': DataLoader(factory.private, batch_size=batch_size, shuffle=True, num_workers=0),
-        'public': DataLoader(factory.public, batch_size=batch_size, shuffle=True, num_workers=0)
+        'Test': DataLoader(factory.private, batch_size=batch_size, shuffle=True, num_workers=0),
+        'Valid': DataLoader(factory.public, batch_size=batch_size, shuffle=True, num_workers=0)
     }
 
     min_validation_loss = {
-        'private': 10000,
-        'public': 10000,
+        'Test': 10000,
+        'Valid': 10000,
     }
 
     for epoch in range(epochs):
@@ -131,7 +134,34 @@ def main():
             x_train = x_train.to(device)
             y_train = y_train.to(device)
             y_predicted = network(x_train)
-            loss = criterion(y_predicted, y_train)
+            # print(y_predicted) # test
+            # print(y_train) #test
+            # print(y_predicted.size()) # test
+            # print(y_train.size()) # test
+            # loss = criterion(y_predicted, y_train)
+            predicted = y_predicted
+            target = y_train
+            denominator = [0] * len(predicted)
+
+            for i in range(len(predicted)):
+                for j in range(len(predicted[i])):
+                    denominator[i] += torch.exp(predicted[i][j])
+
+            res = [0] * len(predicted) 
+
+            for i in range(len(res)):
+                for j in range(len(predicted[i])):
+                    if j != target[i]:
+                        res[i] += -torch.log(1 - torch.exp(predicted[i][j])/denominator[i])
+                res[i] += -torch.log(torch.exp(predicted[i][target[i]])/denominator[i])
+                res[i] = res[i]/len(predicted[i])
+            
+            loss = 0
+            for i in range(len(res)):
+                loss += res[i]
+
+
+
             loss.backward()
             optimizer.step()
             _, predicted = torch.max(y_predicted.data, 1)
@@ -144,7 +174,7 @@ def main():
 
         network.eval()
         with torch.no_grad():
-            for name in ['private', 'public']:
+            for name in ['Test', 'Valid']:
                 total = 0
                 correct = 0
                 total_validation_loss = 0
