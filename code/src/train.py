@@ -1,3 +1,4 @@
+from operator import mod
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -93,6 +94,7 @@ def main():
     # ------------------------
             #    0          1         2       3       4         5          6
     classes = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
+    # network = model.ResidualBlock(in_channeld=len(classes), out_channels=len(classes))
     network = model.Model(num_classes=len(classes)).to(device)
     if not torch.cuda.is_available():
         summary(network, (1, shape[0], shape[1]))
@@ -141,26 +143,30 @@ def main():
             # loss = criterion(y_predicted, y_train)
             predicted = y_predicted
             target = y_train
-            denominator = [0] * len(predicted)
-
-            for i in range(len(predicted)):
-                for j in range(len(predicted[i])):
-                    denominator[i] += torch.exp(predicted[i][j])
-
-            res = [0] * len(predicted) 
-
-            for i in range(len(res)):
-                for j in range(len(predicted[i])):
-                    if j != target[i]:
-                        res[i] += -torch.log(1 - torch.exp(predicted[i][j])/denominator[i])
-                res[i] += -torch.log(torch.exp(predicted[i][target[i]])/denominator[i])
-                res[i] = res[i]/len(predicted[i])
             
+
+            sm = nn.Softmax(dim=1)
+            loss_sm = sm(predicted)
+            loss_log = torch.log(loss_sm)
             loss = 0
-            for i in range(len(res)):
-                loss += res[i]
+            for i in range(len(target)):
+                if target[i] == 0:
+                    loss += -loss_log[i][target[i]] * 3
+                elif target[i] == 1:
+                    loss += -loss_log[i][target[i]] * 5       # 5 or 6 maybe better.
+                elif target[i] == 2:
+                    loss += -loss_log[i][target[i]] * 3 
+                elif target[i] == 3:
+                    loss += -loss_log[i][target[i]] * 2 
+                elif target[i] == 4:
+                    loss += -loss_log[i][target[i]] * 3 
+                elif target[i] == 5:
+                    loss += -loss_log[i][target[i]] * 3 
+                elif target[i] == 6:
+                    loss += -loss_log[i][target[i]] * 3 
 
-
+        
+            loss /= len(target)*(3+5+3+2+3+3+3)  
 
             loss.backward()
             optimizer.step()

@@ -1,4 +1,5 @@
 import csv
+from re import I
 
 import matplotlib.pyplot as plt
 
@@ -8,8 +9,8 @@ x2 = 0
 x3 = 0
 x4 = 0
 x5 = 0
-x6 = 0
-with open("C:/Users/16591/Desktop/MachineLearningLab/Challenge2_LongtailedDistributionEmotionRecognition/code/dataset/fer2013B.csv", 'r') as f:
+x6 = 0   # C:\Users\16591\Desktop\code\dataset
+with open("C:/Users/16591/Desktop/code/dataset/fer2013B.csv", 'r') as f:
     reader = csv.reader(f)
     list_csv = list(reader)
     for line in list_csv:
@@ -42,6 +43,13 @@ for i in range(7):
           if Y[i] == y[j]:
                X[i] = j
 
+print(Y)
+total = 0
+for i in Y:
+     total += i
+for i in Y:
+     print(total/i)
+
 
 
 plt.rcParams["figure.figsize"] = [15.00, 5.00]
@@ -53,4 +61,4 @@ plt.plot(default_x_ticks, Y)
 
 
 #plt.hist(Y)
-plt.savefig("B_training.png")
+plt.savefig("B_training1.png")
