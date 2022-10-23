@@ -1,4 +1,6 @@
 from operator import mod
+from re import X
+from tkinter import Y
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -8,6 +10,12 @@ import csv
 from PIL import Image
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader
+
+import matplotlib.pyplot as plt
+from itertools import count
+import torch
+import numpy as np
+from imblearn.under_sampling import RandomUnderSampler
 
 if not torch.cuda.is_available():
     from torchsummary import summary
@@ -33,14 +41,34 @@ class DataSetFactory:
         with open("C:/Users/16591/Desktop/Github/dataset/fer2013B.csv", 'r') as csvin:
             data = csv.reader(csvin)
             next(data)
+            chance = 0
             for row in data:
                 face = [int(pixel) for pixel in row[1].split()]
                 face = np.asarray(face).reshape(48, 48)
                 face = face.astype('uint8')
-
+                
+# [436, 3171, 3995, 4097, 4830, 4965, 7215]
+#   1     5    0     2     4     6     3
                 if row[-1] == 'Training':
                     emotions.append(int(row[0]))
                     images.append(Image.fromarray(face))
+                    # if row[0] == 1:
+                    #     for i in range(9):
+                    #         emotions.append(int(row[0]))
+                    #         images.append(Image.fromarray(face))
+                    # elif row[0] == 3:
+                    #     if chance == 0:
+                    #         emotions.append(int(row[0]))
+                    #         images.append(Image.fromarray(face))
+                    #         chance = 1
+                    #     elif chance == 1:
+                    #         chance = 0
+                    # else: 
+                    #     emotions.append(int(row[0]))
+                    #     images.append(Image.fromarray(face))
+                        
+ 
+                        
                 elif row[-1] == "Test":
                     private_emotions.append(int(row[0]))
                     private_images.append(Image.fromarray(face))
@@ -132,19 +160,19 @@ def main():
 
         print('learning_rate: %s' % str(current_lr))
         for i, (x_train, y_train) in enumerate(training_loader):
+
+            # x_train: [128, 1, 44, 44]
+            # y_train: [128]
+
             optimizer.zero_grad()
             x_train = x_train.to(device)
             y_train = y_train.to(device)
             y_predicted = network(x_train)
-            # print(y_predicted) # test
-            # print(y_train) #test
-            # print(y_predicted.size()) # test
-            # print(y_train.size()) # test
-            # loss = criterion(y_predicted, y_train)
-            predicted = y_predicted
-            target = y_train
-            
 
+            # loss = criterion(y_predicted, y_train)
+
+            target = y_train
+            predicted = y_predicted
             sm = nn.Softmax(dim=1)
             loss_sm = sm(predicted)
             loss_log = torch.log(loss_sm)
@@ -153,7 +181,7 @@ def main():
                 if target[i] == 0:
                     loss += -loss_log[i][target[i]] * 3
                 elif target[i] == 1:
-                    loss += -loss_log[i][target[i]] * 5       # 5 or 6 maybe better.
+                    loss += -loss_log[i][target[i]] * 8       
                 elif target[i] == 2:
                     loss += -loss_log[i][target[i]] * 3 
                 elif target[i] == 3:
@@ -164,9 +192,9 @@ def main():
                     loss += -loss_log[i][target[i]] * 3 
                 elif target[i] == 6:
                     loss += -loss_log[i][target[i]] * 3 
-
-        
-            loss /= len(target)*(3+5+3+2+3+3+3)  
+            
+            
+            loss /= len(target)*(3+5+3+2+3+3+3) 
 
             loss.backward()
             optimizer.step()
